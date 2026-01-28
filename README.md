@@ -58,7 +58,7 @@ n_runs <- 20                    # Number of iterations (2-5 for quick, 20+ for r
 ## Documentation
 
 ### Manuals Available
-- Both in Spanish and English
+- Both in Spanish and English (will be added soon)
  
 ### User Manual Contents
 - Complete workflow explanation
