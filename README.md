@@ -20,6 +20,10 @@ This repository contains a complete binary classification system for identifying
 
 ## Quick Start
 
+The main analysis pipeline is located in:
+
+[Analysis_pipeline](Code/PIPELINE_V6.R)
+
 ### Prerequisites
 
 - R version 4.3 or higher
@@ -151,6 +155,16 @@ Contains 10 sheets:
 - Built with [caret](https://topepo.github.io/caret/) framework
 - Visualizations powered by [plotly](https://plotly.com/r/)
 - Random Forest implementation: [ranger](https://github.com/imbs-hl/ranger)
+
+## Documentation
+
+The user manuals are available in Spanish:
+
+- 🇪🇸 [Manual de uso del código](Code_esp/MANUAL_SCRIPT_V6.pdf)
+- 🇪🇸 [Manual de interpretación de resultados](Code_esp/MANUAL_RESULTADOS_SCRIPT_V6.pdf)
+
+English versions will be added soon.
+
 
 ## Citation
 
