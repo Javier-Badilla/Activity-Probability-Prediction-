@@ -65,7 +65,6 @@ n_runs <- 20                    # Number of iterations (2-5 for quick, 20+ for r
 - Step-by-step instructions
 - Parameter configuration guide
 - Troubleshooting section
-- Best practices and tips
 
 ### Output Guide Contents
 - Detailed explanation of all 10 Excel sheets
