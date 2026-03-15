@@ -22,7 +22,7 @@ This repository contains a complete binary classification system for identifying
 
 The main analysis pipeline is located in:
 
-[Analysis_pipeline](Code/peptide_activity_prediction_v7.R)
+[Analysis_pipeline](Codes/peptide_activity_prediction_v7.R)
 
 ### Prerequisites
 
