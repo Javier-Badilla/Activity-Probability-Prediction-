@@ -21,17 +21,6 @@ USAGE:
          python plip_afp_pipeline.py
     3. Output: plip_results/PLIP_AFP_Summary.xlsx
 
-PLIP OUTPUT FOLDER STRUCTURE EXPECTED:
-    plip_out/
-    ├── pep42/
-    │   └── report.txt   (or report_full.txt — both are detected)
-    ├── pep24/
-    │   └── report.txt
-    └── pep11/
-        └── report.txt
-
-DEPENDENCIES:
-    pip install openpyxl pandas
 =============================================================================
 """
 

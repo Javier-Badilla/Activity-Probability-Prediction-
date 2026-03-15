@@ -4,25 +4,8 @@
 # Author:  Javier Badilla
 # Date:    2025 - 2026
 #
-# FIXES vs v1:
-#   FIX 1 - Train/test split BEFORE feature selection (no data leakage)
-#   FIX 2 - No upper AUC ceiling; all informative features kept
-#   FIX 3 - Correlation filter (step_corr) replaces AUC ceiling
-#   FIX 4 - SMOTE for class imbalance if ratio > 3
-#   FIX 5 - RF tuning grid expanded + dynamic mtry cap
-#   FIX 6 - AUC-weighted ensemble instead of simple average
-#   FIX 7 - Platt scaling probability calibration
-#
 # WORKFLOW BEFORE RUNNING:
 #   1. Cap your training data to max 300 per class using this snippet:
-#
-#      library(dplyr); library(openxlsx); set.seed(42)
-#      train_data_capped <- train_data %>%
-#        group_by(Type) %>%
-#        slice_sample(n = 300, replace = FALSE) %>%
-#        ungroup()
-#      write.xlsx(train_data_capped, "train_data_capped_300.xlsx")
-#
 #   2. Load train_data_capped_300.xlsx as train_data
 #   3. Load your new peptides as new_data
 #   4. Run this script
@@ -34,17 +17,12 @@
 #   readxl, openxlsx, caret, ranger, nnet, pROC,
 #   dplyr, recipes, themis, plotly, htmlwidgets
 #
-# Install with:
-#   install.packages(c("readxl","openxlsx","caret","ranger","nnet",
-#                      "pROC","dplyr","recipes","themis","plotly","htmlwidgets"))
-#
 # ---------------------- INPUT FORMAT ------------------------
 #
 #   train_data : ID | Type | descriptor1 | descriptor2 | ...
 #   new_data   : ID | descriptor1 | descriptor2 | ...
 #
 # ============================================================
-
 
 # ----------------------- LIBRARIES --------------------------
 

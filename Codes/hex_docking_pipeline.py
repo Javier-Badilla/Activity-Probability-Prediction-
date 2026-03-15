@@ -1,6 +1,6 @@
 """
 =============================================================================
-HEX Docking Results Analysis Pipeline — Multi-Peptide, Per-Orientation  v1.2
+HEX Docking Results Analysis Pipeline — Multi-Peptide, Per-Orientation  v3
 =============================================================================
 
 DESCRIPTION:
@@ -19,40 +19,8 @@ INSTALLATION (run once):
 USAGE:
     1. In HEX, save each orientation as a separate PDB file.
        Organise them into one sub-folder per peptide, named after the peptide:
-
-       results/
-       ├── pep42/
-       │   ├── pep42-1.pdb
-       │   ├── pep42-2.pdb
-       │   └── ...  (up to 100 files)
-       └── pep11/
-           ├── pep11-1.pdb
-           └── ...
-
     2. Set HEX_DIR below to the parent folder (e.g. "./results")
     3. Run:  python hex_docking_pipeline.py
-
-OUTPUTS (saved to OUTPUT_DIR):
-    hex_results/
-    ├── summary_all_peptides.csv        <- cross-peptide comparison
-    ├── summary_all_peptides.txt        <- human-readable report
-    ├── comparison_plot.png             <- visual ranking across peptides
-    ├── pep42/
-    │   ├── orientation_ranking.csv     <- all orientations ranked
-    │   ├── top_models/
-    │   │   ├── pep42-3.pdb             <- top N copied here
-    │   │   └── ...
-    │   └── contact_profile.png         <- contact plot across orientations
-    └── pep11/
-        └── ...
-
-CHANGELOG:
-    v1.2 - Switched input from multi-model PDB to one PDB per orientation.
-           Eliminates MODEL/ENDMDL parsing entirely — no more multi-model bugs.
-    v1.1 - Added "ICE" to KNOWN_ICE_RESNAMES
-         - Rewrote PDB atom parser to handle missing/blank chain IDs
-         - Improved ice vs protein assignment logic
-         - Contact calculation now uses only ice oxygen atoms (OW)
 
 =============================================================================
 """

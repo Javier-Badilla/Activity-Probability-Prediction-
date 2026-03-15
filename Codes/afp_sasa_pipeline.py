@@ -16,19 +16,6 @@ DESCRIPTION:
 INSTALLATION (run once):
     pip install freesasa biopython pandas scipy matplotlib seaborn
 
-USAGE:
-    1. Place all your .pdb files in a folder (e.g., ./pdbs/)
-    2. Set PDB_DIR below to that folder path
-    3. Run: python afp_sasa_pipeline.py
-    4. Results saved to ./afp_results/
-
-OUTPUTS:
-    - afp_results/summary_ranking.csv      <- main ranking table
-    - afp_results/summary_ranking.txt      <- human-readable report
-    - afp_results/<peptide>_residues.csv   <- per-residue data per peptide
-    - afp_results/heatmap_scores.png       <- visual comparison heatmap
-    - afp_results/sasa_profiles.png        <- per-residue SASA bar charts
-
 =============================================================================
 """
 
@@ -44,13 +31,13 @@ from scipy.spatial.distance import cdist
 warnings.filterwarnings("ignore")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# CONFIGURATION — edit these as needed
+# CONFIGURATION
 # ─────────────────────────────────────────────────────────────────────────────
 
 PDB_DIR     = "./PDB"          # folder containing your .pdb files
 OUTPUT_DIR  = "./afp_results"   # where results will be saved
 
-# IBS-typical residues (known to form ice-binding surfaces in AFPs)
+# IBS-typical residues (known to ice-binding)
 IBS_RESIDUES = {"THR", "ALA", "VAL", "SER", "GLY", "LEU", "ILE"}
 
 # Ice lattice spacing targets (Å) — Ih ice a-axis and c-axis
@@ -63,7 +50,7 @@ MIN_EXPOSURE = 10.0
 MAX_EXPOSURE = 120.0   
 
 # B-factor threshold for rigidity
-BFACTOR_RIGID = 30.0  # Å² — below this = rigid = good IBS
+BFACTOR_RIGID = 30.0  # Å² — below this = rigid = good IBS (look for source)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SETUP
@@ -78,6 +65,8 @@ except ImportError:
     HAS_FREESASA = False
     print("WARNING: freesasa not installed. Install with: pip install freesasa")
     print("         SASA analysis will be skipped.\n")
+
+# adding error messages
 
 try:
     from Bio.PDB import PDBParser, DSSP
