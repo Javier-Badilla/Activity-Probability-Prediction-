@@ -22,7 +22,7 @@ This repository contains a complete binary classification system for identifying
 
 The main analysis pipeline is located in:
 
-[Analysis_pipeline](Code/PIPELINE_V6.R)
+[Analysis_pipeline](Code/peptide_activity_prediction_v7.R)
 
 ### Prerequisites
 
@@ -159,8 +159,8 @@ Contains 10 sheets:
 
 The user manuals are available in Spanish:
 
-- 🇪🇸 [Manual de uso del código](Code_esp/MANUAL_SCRIPT_V6.pdf)
-- 🇪🇸 [Manual de interpretación de resultados](Code_esp/MANUAL_RESULTADOS_SCRIPT_V6.pdf)
+- 🇪🇸 [Manual del código principal](Manuales_esp/Manual_Pipeline_Prediccion_Peptidos.pdf)
+- 🇪🇸 [Manual de uso del código para seleccion de AFP](Manuales_esp/Manual_Pipeline_AFP_seleccion.pdf)
 
 English versions will be added soon.
 
