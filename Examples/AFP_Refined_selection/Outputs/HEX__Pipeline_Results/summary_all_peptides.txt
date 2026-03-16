@@ -1,0 +1,72 @@
+======================================================================
+  HEX DOCKING ANALYSIS — MULTI-PEPTIDE SUMMARY REPORT
+======================================================================
+
+Rank   Peptide              Best Model   H-bonds    Contacts     Min dist  Pass rate
+---------------------------------------------------------------------------
+  1    n-meme4              n-meme40003   70         289           1.079 Å  16%
+  2    n-meme5              n-meme50054   66         300           1.492 Å  5%
+  3    n-meme3              n-meme30007   62         245           1.671 Å  10%
+  4    n-meme4-2            n-meme4-20063 58         220           1.948 Å  13%
+  5    n-meme2              n-meme20025   53         221           1.668 Å  15%
+
+
+DETAILED RESULTS PER PEPTIDE
+======================================================================
+
+[#1] n-meme4
+  Best orientation    : n-meme40003
+  H-bond contacts     : 70 (2.4–3.5 Å)
+  Total contacts      : 289 (< 5.0 Å)
+  Minimum distance    : 1.079 Å
+  Orientations passing: 16/100 (16%)
+  Top 5 models extracted: ['n-meme40003', 'n-meme40005', 'n-meme40010', 'n-meme40009', 'n-meme40014']
+  Ice residues found  : ICE
+
+[#2] n-meme5
+  Best orientation    : n-meme50054
+  H-bond contacts     : 66 (2.4–3.5 Å)
+  Total contacts      : 300 (< 5.0 Å)
+  Minimum distance    : 1.492 Å
+  Orientations passing: 5/100 (5%)
+  Top 5 models extracted: ['n-meme50054', 'n-meme50059', 'n-meme50080', 'n-meme50017', 'n-meme50074']
+  Ice residues found  : ICE
+
+[#3] n-meme3
+  Best orientation    : n-meme30007
+  H-bond contacts     : 62 (2.4–3.5 Å)
+  Total contacts      : 245 (< 5.0 Å)
+  Minimum distance    : 1.671 Å
+  Orientations passing: 10/100 (10%)
+  Top 5 models extracted: ['n-meme30007', 'n-meme30034', 'n-meme30066', 'n-meme30005', 'n-meme30047']
+  Ice residues found  : ICE
+
+[#4] n-meme4-2
+  Best orientation    : n-meme4-20063
+  H-bond contacts     : 58 (2.4–3.5 Å)
+  Total contacts      : 220 (< 5.0 Å)
+  Minimum distance    : 1.948 Å
+  Orientations passing: 13/100 (13%)
+  Top 5 models extracted: ['n-meme4-20063', 'n-meme4-20016', 'n-meme4-20053', 'n-meme4-20057', 'n-meme4-20028']
+  Ice residues found  : ICE
+
+[#5] n-meme2
+  Best orientation    : n-meme20025
+  H-bond contacts     : 53 (2.4–3.5 Å)
+  Total contacts      : 221 (< 5.0 Å)
+  Minimum distance    : 1.668 Å
+  Orientations passing: 15/100 (15%)
+  Top 5 models extracted: ['n-meme20025', 'n-meme20001', 'n-meme20023', 'n-meme20042', 'n-meme20094']
+  Ice residues found  : ICE
+
+
+INTERPRETATION GUIDE
+======================================================================
+  H-bond contacts >= 5   : Strong ice binding candidate
+  H-bond contacts  3-4   : Moderate — investigate top models
+  H-bond contacts  < 3   : Weak — deprioritize
+  Min distance < 2.4 Å   : Steric clash — check in PyMOL
+  Min distance 2.4-3.5 Å : Direct H-bond contact (ideal)
+  Min distance 3.5-5.0 Å : Van der Waals contact only
+  Min distance > 5.0 Å   : No real contact — discard
+  Pass rate > 30%        : Many favorable orientations
