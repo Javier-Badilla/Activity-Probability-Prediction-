@@ -1,8 +1,0 @@
-peptide,total_sasa,hydrophobic_sasa,hydrophobic_ratio,n_ibs_candidates,ibs_residue_list,a_axis_matches,c_axis_matches,total_matches,lattice_score,mean_ibs_bfactor,rigid_ibs_fraction,hydrophobic_ratio_pts,ibs_candidates_pts,lattice_score_pts,bfactor_rigidity_pts,total_score,rank
-n_meme2,1201.35,650.72,0.542,7,"LEU2, ILE3, ILE5, THR7, ALA8, LEU9, THR10",2,3,5,0.2381,96.72,0.0,2.0,2.0,3.0,0.0,7.0,1
-n_meme3,1268.96,575.41,0.453,5,"ALA2, THR4, THR7, GLY8, ILE9",2,1,3,0.2,96.76,0.0,2.0,2.0,3.0,0.0,7.0,2
-n_meme4,1286.66,756.93,0.588,5,"ILE1, LEU4, VAL5, GLY6, VAL9",3,0,3,0.3,93.17,0.0,2.0,2.0,3.0,0.0,7.0,3
-n_meme4_2,1257.55,862.37,0.686,5,"ILE1, ILE4, VAL5, GLY6, VAL9",1,0,1,0.1,93.38,0.0,2.0,2.0,2.0,0.0,6.0,4
-n_meme5,1256.72,167.47,0.133,3,"THR2, SER4, THR5",0,1,1,0.1667,91.42,0.0,0.0,1.0,3.0,0.0,4.0,5
-n_meme1,1405.14,591.52,0.421,2,"LEU2, VAL7",0,0,0,0.0,88.16,0.0,1.0,0.0,0.0,0.0,1.0,6
-n_meme6,1303.39,316.15,0.243,2,"THR2, SER4",0,0,0,0.0,90.25,0.0,0.0,0.0,0.0,0.0,0.0,7

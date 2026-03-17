@@ -1,6 +1,0 @@
-peptide,n_models,best_model,best_hbond_contacts,best_total_contacts,best_min_dist_A,orientations_passing,pass_rate_pct,top_models,ice_resnames_found
-n-meme2,100,n-meme20025,53,221,1.668,15,15.0,"['n-meme20025', 'n-meme20001', 'n-meme20023', 'n-meme20042', 'n-meme20094']",ICE
-n-meme3,100,n-meme30007,62,245,1.671,10,10.0,"['n-meme30007', 'n-meme30034', 'n-meme30066', 'n-meme30005', 'n-meme30047']",ICE
-n-meme4,100,n-meme40003,70,289,1.079,16,16.0,"['n-meme40003', 'n-meme40005', 'n-meme40010', 'n-meme40009', 'n-meme40014']",ICE
-n-meme4-2,100,n-meme4-20063,58,220,1.948,13,13.0,"['n-meme4-20063', 'n-meme4-20016', 'n-meme4-20053', 'n-meme4-20057', 'n-meme4-20028']",ICE
-n-meme5,100,n-meme50054,66,300,1.492,5,5.0,"['n-meme50054', 'n-meme50059', 'n-meme50080', 'n-meme50017', 'n-meme50074']",ICE
