@@ -4,26 +4,37 @@ import math
 import re
 from dataclasses import dataclass
 import pandas as pd
+from pathlib import Path
 import streamlit as st
 
 # --------------------------------------------------------------------------
 # Configuración de Página y Logos
 # --------------------------------------------------------------------------
 
-# 1. Set the browser tab icon using your .ico file
+
+# Directorio donde app.py está
+BASE_DIR = Path(__file__).parent
+
+LOGO_PATH = BASE_DIR / "assets" / "logo.png"
+ICON_PATH = BASE_DIR / "assets" / "icon.ico"
+
+# Configuracion de pagina
 st.set_page_config(
     page_title="SPPS Builder | Síntesis en Fase Sólida",
-    page_icon="assets/favicon.ico",
+    page_icon=str(ICON_PATH) if ICON_PATH.exists() else "🧪",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# 2. Set the app logo at the top of the sidebar
-# 'icon_image' is optional and displays when the sidebar is collapsed
-st.logo(
-    image="assets/logo.png",
-    icon_image="assets/icon.ico"
-)
+# Logo
+if LOGO_PATH.exists():
+    st.logo(
+        image=str(LOGO_PATH),
+        icon_image=str(ICON_PATH) if ICON_PATH.exists() else None
+    )
+else:
+    st.warning(f"Logo not found at: {LOGO_PATH}")
+
 
 # --------------------------------------------------------------------------
 # Datos y Constantes
