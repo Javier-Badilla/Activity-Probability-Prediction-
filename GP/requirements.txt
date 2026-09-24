@@ -1,0 +1,6 @@
+streamlit>=1.35.0
+python-docx
+reportlab
+pandas
+openpyxl
+Pillow
