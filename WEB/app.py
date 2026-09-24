@@ -1,27 +1,33 @@
 import streamlit as st
 import pandas as pd
+import os
 import io
 from seq2smiles import clean_sequence, sequence_to_smiles # Importing your core logic
 
 # Set up the page
 st.set_page_config(page_title="Protein Sequence → Canonical SMILES", page_icon="🧬")
 st.title("Protein Sequence → Canonical SMILES")
-import os
 
-# Create three columns for the logos
+
 col1, col2, col3 = st.columns(3)
 
-# Display the images in their respective columns
-# We use a try-except block just in case the files aren't found
+# Find the absolute path to the directory containing app.py
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the absolute paths for each image
+nbc_path = os.path.join(BASE_DIR, "assets", "NBC_LOGO_TRANS.png")
+pucv_path = os.path.join(BASE_DIR, "assets", "PUCV_100.png")
+utfsm_path = os.path.join(BASE_DIR, "assets", "UTFSM_LOGO_TRANS.png")
+
 try:
     with col1:
-        st.image("assets/NBC_LOGO_TRANS.png", width=150)
+        st.image(nbc_path, width=150)
     with col2:
-        st.image("assets/PUCV_100.png", width=150)
+        st.image(pucv_path, width=150)
     with col3:
-        st.image("assets/UTFSM_LOGO_TRANS.png", width=150)
-except FileNotFoundError:
-    st.warning("Make sure the 'assets' folder and logos are uploaded to GitHub!")
+        st.image(utfsm_path, width=150)
+except FileNotFoundError as e:
+    st.warning(f"Could not find the image file. Check your paths: {e}")
     
 st.markdown(
     """
