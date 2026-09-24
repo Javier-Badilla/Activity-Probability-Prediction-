@@ -8,17 +8,17 @@ from pathlib import Path
 import streamlit as st
 
 # --------------------------------------------------------------------------
-# Configuración de Página y Logos
+# Logo and page
 # --------------------------------------------------------------------------
 
 
-# Directorio donde app.py está
+# Findig app.py
 BASE_DIR = Path(__file__).parent
 
 LOGO_PATH = BASE_DIR / "assets" / "logo.png"
 ICON_PATH = BASE_DIR / "assets" / "icon.ico"
 
-# Configuracion de pagina
+# Page config
 st.set_page_config(
     page_title="SPPS Builder | Síntesis en Fase Sólida",
     page_icon=str(ICON_PATH) if ICON_PATH.exists() else "🧪",
@@ -37,7 +37,7 @@ else:
 
 
 # --------------------------------------------------------------------------
-# Datos y Constantes
+# Data constants
 # --------------------------------------------------------------------------
 ONE2THREE = {
     "A": "ALA", "R": "ARG", "N": "ASN", "D": "ASP", "C": "CYS", "Q": "GLN",
@@ -393,33 +393,34 @@ def parse_dataframe(df):
 # Componentes Visuales y Barra Lateral
 # --------------------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### 🧬 **SPPS Automation Studio**")
-    st.caption("Generación estandarizada de cuadernos de laboratorio.")
+    st.markdown("### 🧬 **SFS Studio**")
+    st.caption("Generación de Programas de Sintesis.")
     st.divider()
 
     st.markdown("#### **Información del Sistema**")
-    st.info("Plataforma configurada para síntesis estándar Fmoc/tBu en fase sólida.")
+    st.info("Plataforma para la generación de programas de uso en la Sintesis en fase solida Fmoc.")
 
     st.divider()
-    st.markdown("Developed with Streamlit & Python")
+    st.markdown("Desarrollado en Streamlit y Python")
+    st.caption("Javier Badilla.")
 
 # Banner Principal
 col_logo, col_header = st.columns([1, 6])
 with col_logo:
     st.title("🧪")
 with col_header:
-    st.title("Generador de Programas de Síntesis (SPPS)")
-    st.caption("Plataforma interactiva para la creación de programas de síntesis simultánea y en reactor individual.")
+    st.title("Generador de Programas de Síntesis")
+    st.caption("Plataforma interactiva para la creación de programas de síntesis simultánea Tea Bag y en reactor.")
 
 st.markdown("---")
 
-tab1, tab2 = st.tabs(["📊 **Síntesis Simultánea (Bolsas)**", "⚗️ **Síntesis en Reactor Único**"])
+tab1, tab2 = st.tabs(["📊 **Síntesis Simultánea (Bolsas)**", "⚗️ **Síntesis en Reactor**"])
 
 # --------------------------------------------------------------------------
 # TAB 1: Simultánea
 # --------------------------------------------------------------------------
 with tab1:
-    st.subheader("Configuración de Síntesis Simultánea")
+    st.subheader("Configuración")
     st.write("Cargue un archivo Excel/CSV con las columnas `Bolsa`, `Secuencia`, `Familia` y `Pos`.")
 
     with st.container(border=True):
@@ -427,7 +428,7 @@ with tab1:
         with c1:
             s_nombre = st.text_input("ID / Nombre de Síntesis", value=datetime.date.today().strftime("S%m%d%Y"))
         with c2:
-            s_mg = st.number_input("Masa por bolsa (mg)", value=40, step=5)
+            s_mg = st.number_input("Masa resina por bolsa (mg)", value=40, step=5)
         with c3:
             s_desprot = st.text_input("Método de Desprotección", value=DEFAULT_DEPROTECTION)
 
@@ -475,7 +476,7 @@ with tab1:
 # TAB 2: Reactor
 # --------------------------------------------------------------------------
 with tab2:
-    st.subheader("Configuración de Reactor Único")
+    st.subheader("Configuración de Reactor")
     
     with st.container(border=True):
         rc1, rc2 = st.columns(2)
