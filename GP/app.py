@@ -4,40 +4,28 @@ import math
 import re
 from dataclasses import dataclass
 import pandas as pd
-from pathlib import Path
 import streamlit as st
 
 # --------------------------------------------------------------------------
-# Logo and page
+# Configuración de Página y Logos
 # --------------------------------------------------------------------------
 
-
-# Findig app.py
-BASE_DIR = Path(__file__).parent
-
-LOGO_PATH = BASE_DIR / "assets" / "logo.png"
-ICON_PATH = BASE_DIR / "assets" / "icon.ico"
-
-# Page config
+# 1. Set browser icon -.ico file-
 st.set_page_config(
     page_title="SPPS Builder | Síntesis en Fase Sólida",
-    page_icon=str(ICON_PATH) if ICON_PATH.exists() else "🧪",
+    page_icon="assets/favicon.ico",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Logo
-if LOGO_PATH.exists():
-    st.logo(
-        image=str(LOGO_PATH),
-        icon_image=str(ICON_PATH) if ICON_PATH.exists() else None
-    )
-else:
-    st.warning(f"Logo not found at: {LOGO_PATH}")
-
+# 2. Sidebar logo
+st.logo(
+    image="assets/logo.png",
+    icon_image="assets/icon.ico"
+)
 
 # --------------------------------------------------------------------------
-# Data constants
+# Datos y Constantes
 # --------------------------------------------------------------------------
 ONE2THREE = {
     "A": "ALA", "R": "ARG", "N": "ASN", "D": "ASP", "C": "CYS", "Q": "GLN",
@@ -60,13 +48,37 @@ SPECIAL_MASSES = {
     "orn": 114.1472, "aib": 85.1045, "nle": 113.1594, "nva": 99.1326,
     "dab": 100.1205, "dap": 86.0932, "abu": 85.1045, "cit": 157.1721,
 }
-ACTIVATORS = {
-    "TBTU": ("AA+TBTU+OXYMA+DIPEA", "(5:5:5:7,5)"),
-    "HBTU": ("AA+HBTU+OXYMA+DIPEA", "(5:5:5:7,5)"),
-    "HCTU": ("AA+HCTU+OXYMA+DIPEA", "(5:5:5:7,5)"),
-    "DIC":  ("AA+DIC+OXYMA", "(5:5:5)"),
+
+DEFAULT_COUPLING_CONFIG = {
+    "simple": {"eAA": 5.0, "r2": "TBTU", "e2": 5.0, "r3": "OXYMA", "e3": 5.0, "r4": "DIPEA", "e4": 7.5},
+    "doble":  {"eAA": 5.0, "r2": "HBTU", "e2": 5.0, "r3": "OXYMA", "e3": 5.0, "r4": "DIPEA", "e4": 7.5},
+    "triple": {"eAA": 5.0, "r2": "HCTU", "e2": 5.0, "r3": "OXYMA", "e3": 5.0, "r4": "DIPEA", "e4": 7.5},
 }
-DEFAULT_COUPLINGS = {"simple": "TBTU", "doble": "HBTU", "triple": "HCTU"}
+
+
+def format_excess(n):
+    """Formatea un exceso: enteros sin decimales, no enteros con 1 decimal
+    y coma como separador (igual que el formato original, ej. '7,5')."""
+    n = float(n)
+    if n == int(n):
+        return str(int(n))
+    return f"{n:.1f}".replace(".", ",")
+
+
+def build_cycle_formula(cfg):
+    """Construye el texto de fórmula ('AA+HBTU+OXYMA+DIPEA') y la
+    proporción de excesos ('(5:5:5:7,5)') a partir de la configuración de
+    un ciclo, omitiendo cualquier reactivo 2/3/4 que haya quedado vacío."""
+    reactivos = ["AA"]
+    excesos = [cfg["eAA"]]
+    for name_key, exc_key in (("r2", "e2"), ("r3", "e3"), ("r4", "e4")):
+        nombre = (cfg.get(name_key) or "").strip()
+        if nombre:
+            reactivos.append(nombre.upper())
+            excesos.append(cfg[exc_key])
+    texto = "+".join(reactivos)
+    prop = "(" + ":".join(format_excess(e) for e in excesos) + ")"
+    return texto, prop
 DEFAULT_DEPROTECTION = "PP 20% TritonX100 1%/DMF"
 STANDARD = set(ONE2THREE)
 PAGEBREAK = "PAGEBREAK"
@@ -74,7 +86,7 @@ CHK = "[ ]"
 
 
 # --------------------------------------------------------------------------
-# Lógica Interna y Parser
+# Interna
 # --------------------------------------------------------------------------
 @dataclass(frozen=True)
 class Res:
@@ -150,8 +162,8 @@ def _plain(s):
     return [(s, "")]
 
 
-def build_simultaneous_program(peptides, name, mg, deprotection, couplings, windows_by="posicion"):
-    couplings = {**DEFAULT_COUPLINGS, **(couplings or {})}
+def build_simultaneous_program(peptides, name, mg, deprotection, coupling_config, windows_by="posicion"):
+    coupling_config = coupling_config or DEFAULT_COUPLING_CONFIG
     peptides = sorted(peptides, key=lambda p: p.bag)
     L = []
     add = lambda s="": L.append(_plain(s))
@@ -238,7 +250,7 @@ def build_simultaneous_program(peptides, name, mg, deprotection, couplings, wind
         add()
         add("Ciclo de Acople               FECHA     HORA          HECHO POR      REVISADO POR ")
         for nombre, boxed in (("simple", False), ("doble", True), ("triple", True)):
-            texto, prop = ACTIVATORS[couplings[nombre].upper()]
+            texto, prop = build_cycle_formula(coupling_config[nombre])
             add(f"        {texto}")
             L.append(field_line(f"    {nombre.capitalize()} {prop}", boxed, 27,
                                 "|___/___/___|__:__|__:__|______________ ______________"))
@@ -248,8 +260,8 @@ def build_simultaneous_program(peptides, name, mg, deprotection, couplings, wind
     return L
 
 
-def build_reactor_program(peptide, reactor_id, name, mg, deprotection, couplings=None):
-    couplings = {**DEFAULT_COUPLINGS, **(couplings or {})}
+def build_reactor_program(peptide, reactor_id, name, mg, deprotection, coupling_config=None, incluir_triple=True):
+    coupling_config = coupling_config or DEFAULT_COUPLING_CONFIG
     L = []
     add = lambda s="": L.append(_plain(s))
 
@@ -273,15 +285,23 @@ def build_reactor_program(peptide, reactor_id, name, mg, deprotection, couplings
         add("DESPROTECCION  FECHA ___/___/___         CHEQUEO   HECHO POR     REVISADO POR ")
         add(f"{deprotection} (2x10')       |____|___|______________ ______________")
         add("    Lavado con DMF(3x1')               |__|__|__|______________ ______________")
-        add("    Ensayo ninhidrina                  |________|______________ ______________")
         add("    Lavado con DCM (1x1')              |________|______________ ______________")
         add("Ciclo de Acople               FECHA     HORA          HECHO POR      REVISADO POR ")
-        
-        for nombre in ("simple", "doble", "triple"):
-            texto, prop = ACTIVATORS[couplings[nombre].upper()]
+
+        for nombre in ("simple", "doble"):
+            texto, prop = build_cycle_formula(coupling_config[nombre])
             add(f"        {texto}")
             add(f"    {nombre.capitalize()} {prop:<18}|___/___/___|__:__|__:__|______________ ______________")
-            
+
+        # Ensayo de ninhidrina reubicado: ahora entre el ciclo Doble y el Triple
+        # (si el ciclo Triple se omite, queda igualmente despues del Doble).
+        add("    Ensayo ninhidrina                  |________|______________ ______________")
+
+        if incluir_triple:
+            texto, prop = build_cycle_formula(coupling_config["triple"])
+            add(f"        {texto}")
+            add(f"    Triple {prop:<18}|___/___/___|__:__|__:__|______________ ______________")
+
         add("Despues de cada ciclo y antes del test BPB lavar con DMF(2x1')")
         add(f":{aa_label}    ")
 
@@ -393,34 +413,88 @@ def parse_dataframe(df):
 # Componentes Visuales y Barra Lateral
 # --------------------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### 🧬 **SFS Studio**")
-    st.caption("Generación de Programas de Sintesis.")
+    st.markdown("### 🧬 **SPPS Automation Studio**")
+    st.caption("Generación estandarizada de cuadernos de laboratorio.")
     st.divider()
 
     st.markdown("#### **Información del Sistema**")
-    st.info("Plataforma para la generación de programas de uso en la Sintesis en fase solida Fmoc.")
+    st.info("Plataforma configurada para síntesis estándar Fmoc/tBu en fase sólida.")
 
     st.divider()
-    st.markdown("Desarrollado en Streamlit y Python")
-    st.caption("Javier Badilla.")
+    st.markdown(" Developed with Streamlit & Python. ")
+    st.caption(" By Jvaier Badilla ")
 
 # Banner Principal
 col_logo, col_header = st.columns([1, 6])
 with col_logo:
     st.title("🧪")
 with col_header:
-    st.title("Generador de Programas de Síntesis")
-    st.caption("Plataforma interactiva para la creación de programas de síntesis simultánea Tea Bag y en reactor.")
+    st.title("Generador de Programas de Síntesis (SPPS)")
+    st.caption("Plataforma interactiva para la creación de programas de síntesis simultánea y en reactor individual.")
 
 st.markdown("---")
 
-tab1, tab2 = st.tabs(["📊 **Síntesis Simultánea (Bolsas)**", "⚗️ **Síntesis en Reactor**"])
+# --------------------------------------------------------------------------
+# Configuración de Ciclos de Acople (compartida por ambas pestañas)
+# --------------------------------------------------------------------------
+with st.expander("⚙️ Configuración de Ciclos de Acople (reactivos y excesos)"):
+    st.caption(
+        "El reactivo AA siempre está presente. Los otros tres reactivos son "
+        "opcionales: deja el campo de nombre vacío para omitirlo de la fórmula "
+    )
+
+    coupling_config = {}
+    cycle_labels = {"simple": "Simple", "doble": "Doble", "triple": "Triple"}
+
+    for nombre, etiqueta in cycle_labels.items():
+        st.markdown(f"**Ciclo {etiqueta}**")
+        defaults = DEFAULT_COUPLING_CONFIG[nombre]
+
+        c_aa, c_r2, c_r3, c_r4 = st.columns(4)
+
+        with c_aa:
+            st.text_input("Aminoacido", value="AA", disabled=True, key=f"r1_label_{nombre}")
+            e_aa = st.number_input(
+                "Exceso", value=defaults["eAA"], step=0.1, format="%.1f",
+                key=f"eAA_{nombre}"
+            )
+
+        with c_r2:
+            r2 = st.text_input("Activador", value=defaults["r2"], key=f"r2_{nombre}")
+            e2 = st.number_input(
+                "Exceso", value=defaults["e2"], step=0.1, format="%.1f",
+                key=f"e2_{nombre}", disabled=(r2.strip() == "")
+            )
+
+        with c_r3:
+            r3 = st.text_input("OXIMA", value=defaults["r3"], key=f"r3_{nombre}")
+            e3 = st.number_input(
+                "Exceso", value=defaults["e3"], step=0.1, format="%.1f",
+                key=f"e3_{nombre}", disabled=(r3.strip() == "")
+            )
+
+        with c_r4:
+            r4 = st.text_input("DIPEA", value=defaults["r4"], key=f"r4_{nombre}")
+            e4 = st.number_input(
+                "Exceso", value=defaults["e4"], step=0.1, format="%.1f",
+                key=f"e4_{nombre}", disabled=(r4.strip() == "")
+            )
+
+        coupling_config[nombre] = {
+            "eAA": e_aa, "r2": r2, "e2": e2, "r3": r3, "e3": e3, "r4": r4, "e4": e4,
+        }
+
+        texto_preview, prop_preview = build_cycle_formula(coupling_config[nombre])
+        st.caption(f"Vista previa: `{texto_preview} {prop_preview}`")
+        st.divider()
+
+tab1, tab2 = st.tabs(["📊 **Síntesis Simultánea (Bolsas)**", "⚗️ **Síntesis en Reactor Único**"])
 
 # --------------------------------------------------------------------------
 # TAB 1: Simultánea
 # --------------------------------------------------------------------------
 with tab1:
-    st.subheader("Configuración")
+    st.subheader("Configuración de Síntesis Simultánea")
     st.write("Cargue un archivo Excel/CSV con las columnas `Bolsa`, `Secuencia`, `Familia` y `Pos`.")
 
     with st.container(border=True):
@@ -428,7 +502,7 @@ with tab1:
         with c1:
             s_nombre = st.text_input("ID / Nombre de Síntesis", value=datetime.date.today().strftime("S%m%d%Y"))
         with c2:
-            s_mg = st.number_input("Masa resina por bolsa (mg)", value=40, step=5)
+            s_mg = st.number_input("Masa por bolsa (mg)", value=40, step=5)
         with c3:
             s_desprot = st.text_input("Método de Desprotección", value=DEFAULT_DEPROTECTION)
 
@@ -446,7 +520,7 @@ with tab1:
 
             if st.button("🚀 Generar Documentos", type="primary", key="btn_sim"):
                 with st.spinner("Procesando y generando archivos Word/PDF..."):
-                    lines = build_simultaneous_program(peptides, s_nombre, s_mg, s_desprot, DEFAULT_COUPLINGS)
+                    lines = build_simultaneous_program(peptides, s_nombre, s_mg, s_desprot, coupling_config)
                     docx_buf = generate_docx_bytes(lines, s_nombre)
                     pdf_buf = generate_pdf_bytes(lines, s_nombre)
 
@@ -476,7 +550,7 @@ with tab1:
 # TAB 2: Reactor
 # --------------------------------------------------------------------------
 with tab2:
-    st.subheader("Configuración de Reactor")
+    st.subheader("Configuración de Reactor Único")
     
     with st.container(border=True):
         rc1, rc2 = st.columns(2)
@@ -489,11 +563,18 @@ with tab2:
 
         r_desprot = st.text_input("Método de Desprotección ", value="PP 20% TritonX100 1%/DMF", key="r_desp")
 
+        r_incluir_triple = st.checkbox(
+            "Incluir ciclo Triple en el programa", value=True, key="r_incl_triple"
+        )
+
     if st.button("🚀 Generar Programa Reactor", type="primary", key="btn_reac"):
         try:
             with st.spinner("Calculando peso molecular y secuencias..."):
                 pep = Peptide(1, parse_sequence(r_secuencia), r_secuencia)
-                lines = build_reactor_program(pep, r_reactor, r_nombre, r_mg, r_desprot, DEFAULT_COUPLINGS)
+                lines = build_reactor_program(
+                    pep, r_reactor, r_nombre, r_mg, r_desprot, coupling_config,
+                    incluir_triple=r_incluir_triple
+                )
 
                 docx_buf = generate_docx_bytes(lines, r_nombre)
                 pdf_buf = generate_pdf_bytes(lines, r_nombre)
